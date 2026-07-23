@@ -145,13 +145,32 @@ button {
 .btn-back:active, .btn-reset:active { background: rgba(27,36,48,0.14); }
 
 /* ===== Mode select ===== */
+.mode-stage {
+  position: relative;
+  z-index: 1;
+  margin: auto 0;
+}
+
+.mode-hint {
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin: 8px 0 4px;
+}
+#screen-mode.active .mode-hint {
+  animation: fade-up 0.5s ease backwards;
+}
+
 .mode-cards {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 16px;
-  margin-top: 24px;
+  margin-top: 20px;
 }
+
 .mode-card {
+  position: relative;
   background: white;
   border: 2px solid var(--paper-line);
   border-radius: var(--radius);
@@ -159,30 +178,143 @@ button {
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  gap: 6px;
+  max-height: 320px;
+  overflow: hidden;
+  transform-origin: center;
+  will-change: transform, opacity;
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.25, 0.4, 1),
+    opacity 0.4s ease,
+    max-height 0.5s ease,
+    padding 0.5s ease,
+    margin 0.5s ease,
+    border-color 0.2s ease,
+    box-shadow 0.3s ease,
+    background 0.2s ease;
 }
-.mode-card:active { transform: scale(0.98); }
-.mode-card.selected { border-color: var(--amber); background: #FFF8EA; }
-.mode-icon { font-size: 1.1rem; color: var(--teal); letter-spacing: 4px; }
-.mode-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.15rem; }
-.mode-desc { color: var(--ink-soft); font-size: 0.85rem; }
 
-.difficulty-picker { margin-top: 28px; }
+/* staggered entrance whenever the mode screen becomes active */
+#screen-mode.active .mode-card {
+  animation: card-in 0.55s cubic-bezier(0.34, 1.2, 0.4, 1) backwards;
+}
+#screen-mode.active .card-friend { animation-delay: 0.06s; }
+#screen-mode.active .card-computer { animation-delay: 0.15s; }
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(28px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.mode-card:active { transform: scale(0.98); }
+@media (hover: hover) {
+  .mode-card:hover { border-color: var(--amber); transform: translateY(-3px); }
+}
+
+/* selected / animating states */
+.card-friend.chosen {
+  border-color: var(--teal);
+  background: #EAF6F5;
+  box-shadow: 0 12px 30px rgba(46, 139, 135, 0.28);
+  transform: scale(1.05);
+}
+.card-computer.chosen {
+  border-color: var(--red);
+  background: #FCEDED;
+  box-shadow: 0 12px 30px rgba(214, 69, 69, 0.24);
+  transform: scale(1.03);
+}
+
+/* fade & collapse (friend chosen -> computer card leaves) */
+.mode-card.dismiss {
+  opacity: 0;
+  transform: scale(0.9);
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: -16px;
+  border-width: 0;
+  pointer-events: none;
+}
+/* drop down & disappear (computer chosen -> friend card leaves) */
+.mode-card.exit-down {
+  opacity: 0;
+  transform: translateY(130%) scale(0.9);
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: -16px;
+  border-width: 0;
+  pointer-events: none;
+}
+
+.mode-glyph {
+  width: 92px;
+  height: 40px;
+  margin-bottom: 6px;
+  overflow: visible;
+}
+.g-x { fill: none; stroke: var(--teal); stroke-width: 9; stroke-linecap: round; }
+.g-o { fill: none; stroke: var(--red); stroke-width: 9; }
+.g-cpu rect { fill: none; stroke: var(--ink-soft); stroke-width: 5; }
+.g-cpu line { stroke: var(--ink-soft); stroke-width: 5; stroke-linecap: round; }
+
+.mode-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.2rem; }
+.mode-desc { color: var(--ink-soft); font-size: 0.85rem; line-height: 1.45; }
+.mode-tag {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(27, 36, 48, 0.06);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.difficulty-picker {
+  margin-top: 24px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.2, 0.4, 1);
+}
 .difficulty-picker.hidden { display: none; }
-.difficulty-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); margin-bottom: 10px; }
+.difficulty-picker.reveal { opacity: 1; transform: none; }
+.difficulty-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+  text-align: center;
+}
 .difficulty-options { display: flex; gap: 10px; }
 .chip {
   flex: 1;
-  padding: 12px 8px;
+  padding: 14px 8px;
   border-radius: 12px;
   border: 2px solid var(--paper-line);
   background: white;
   font-size: 0.85rem;
   font-weight: 600;
   text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease, color 0.15s ease;
 }
-.chip.selected { border-color: var(--teal); background: #EAF6F5; color: var(--teal); }
+.chip:active { transform: scale(0.96); }
+@media (hover: hover) {
+  .chip:hover { border-color: var(--teal); }
+}
+.difficulty-picker.reveal .chip { animation: card-in 0.4s ease backwards; }
+.difficulty-picker.reveal .chip:nth-child(1) { animation-delay: 0.05s; }
+.difficulty-picker.reveal .chip:nth-child(2) { animation-delay: 0.11s; }
+.difficulty-picker.reveal .chip:nth-child(3) { animation-delay: 0.17s; }
+.chip.selected { border-color: var(--teal); background: #EAF6F5; color: var(--teal); transform: scale(1.05); }
 
 /* ===== Game screen ===== */
 .scoreboard {
@@ -258,6 +390,5 @@ button {
 
 @media (min-width: 600px) {
   .screen { max-width: 480px; margin: 0 auto; }
-  .mode-cards { flex-direction: row; }
-  .mode-card { flex: 1; }
+  .mode-cards { flex-direction: column; }
 }

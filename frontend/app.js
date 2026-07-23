@@ -29,31 +29,77 @@ function showScreen(name) {
   screens[name].classList.add("active");
 }
 
-document.getElementById("btn-enter").addEventListener("click", () => showScreen("mode"));
-document.getElementById("mode-back").addEventListener("click", () => showScreen("welcome"));
-document.getElementById("game-back").addEventListener("click", () => showScreen("mode"));
+const friendCard = document.getElementById("btn-vs-friend");
+const computerCard = document.getElementById("btn-vs-computer");
+const modeHint = document.getElementById("mode-hint");
+const TRANSITION_MS = 620; // pause between the card animation and opening the game
 
-document.getElementById("btn-vs-friend").addEventListener("click", () => {
-  mode = "friend";
-  document.getElementById("btn-vs-friend").classList.add("selected");
-  document.getElementById("btn-vs-computer").classList.remove("selected");
+let modeTransitioning = false;
+
+function resetModeScreen() {
+  modeTransitioning = false;
+  mode = null;
+  friendCard.classList.remove("chosen", "dismiss", "exit-down");
+  computerCard.classList.remove("chosen", "dismiss", "exit-down");
   difficultyPicker.classList.add("hidden");
-  startGame();
+  difficultyPicker.classList.remove("reveal");
+  document.querySelectorAll(".chip").forEach((c) => c.classList.remove("selected"));
+  if (modeHint) modeHint.textContent = "How do you want to play?";
+}
+
+document.getElementById("btn-enter").addEventListener("click", () => {
+  resetModeScreen();
+  showScreen("mode");
 });
 
-document.getElementById("btn-vs-computer").addEventListener("click", () => {
+document.getElementById("mode-back").addEventListener("click", () => {
+  // If the difficulty picker is showing, step back to the two cards first.
+  if (mode === "computer" && !modeTransitioning) {
+    resetModeScreen();
+    return;
+  }
+  showScreen("welcome");
+});
+
+document.getElementById("game-back").addEventListener("click", () => {
+  resetModeScreen();
+  showScreen("mode");
+});
+
+// You & a Friend: card glides to the middle, then the game opens shortly after.
+friendCard.addEventListener("click", () => {
+  if (modeTransitioning) return;
+  modeTransitioning = true;
+  mode = "friend";
+  if (modeHint) modeHint.textContent = "Starting a local match…";
+  difficultyPicker.classList.add("hidden");
+  difficultyPicker.classList.remove("reveal");
+  computerCard.classList.add("dismiss");
+  friendCard.classList.add("chosen");
+  setTimeout(startGame, TRANSITION_MS);
+});
+
+// You vs Computer: friend card drops away, this card takes over and reveals difficulty.
+computerCard.addEventListener("click", () => {
+  if (modeTransitioning || mode === "computer") return;
   mode = "computer";
-  document.getElementById("btn-vs-computer").classList.add("selected");
-  document.getElementById("btn-vs-friend").classList.remove("selected");
+  if (modeHint) modeHint.textContent = "Pick your challenge";
+  friendCard.classList.add("exit-down");
+  computerCard.classList.add("chosen");
   difficultyPicker.classList.remove("hidden");
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => difficultyPicker.classList.add("reveal"))
+  );
 });
 
 document.querySelectorAll(".chip").forEach((chip) => {
   chip.addEventListener("click", () => {
+    if (modeTransitioning) return;
+    modeTransitioning = true;
     document.querySelectorAll(".chip").forEach((c) => c.classList.remove("selected"));
     chip.classList.add("selected");
     difficulty = chip.dataset.difficulty;
-    startGame();
+    setTimeout(startGame, TRANSITION_MS);
   });
 });
 

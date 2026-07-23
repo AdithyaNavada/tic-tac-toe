@@ -30,29 +30,49 @@
   </section>
 
   <section id="screen-mode" class="screen" data-testid="screen-mode">
+    <div class="paper-texture"></div>
     <div class="topbar">
       <button class="btn-back" id="mode-back" aria-label="Back" data-testid="mode-back">&larr;</button>
       <h2 class="screen-title">Choose Your Match</h2>
     </div>
-    <div class="mode-cards">
-      <button class="mode-card" id="btn-vs-friend" data-testid="btn-vs-friend">
-        <span class="mode-icon">✦ ✦</span>
-        <span class="mode-name">You &amp; a Friend</span>
-        <span class="mode-desc">Pass the phone, take turns, same device</span>
-      </button>
-      <button class="mode-card" id="btn-vs-computer" data-testid="btn-vs-computer">
-        <span class="mode-icon">✦ ⚙</span>
-        <span class="mode-name">You vs Computer</span>
-        <span class="mode-desc">Pick a difficulty and take on the AI</span>
-      </button>
-    </div>
 
-    <div id="difficulty-picker" class="difficulty-picker hidden" data-testid="difficulty-picker">
-      <p class="difficulty-label">Difficulty</p>
-      <div class="difficulty-options">
-        <button class="chip" data-difficulty="easy" data-testid="difficulty-easy">Easy</button>
-        <button class="chip" data-difficulty="medium" data-testid="difficulty-medium">Medium</button>
-        <button class="chip" data-difficulty="hard" data-testid="difficulty-hard">Unbeatable</button>
+    <div class="mode-stage">
+      <p class="mode-hint" id="mode-hint">How do you want to play?</p>
+
+      <div class="mode-cards" id="mode-cards">
+        <button class="mode-card card-friend" id="btn-vs-friend" data-testid="btn-vs-friend">
+          <svg class="mode-glyph" viewBox="0 0 130 56" aria-hidden="true">
+            <path class="g-x" d="M14 14 L40 42 M40 14 L14 42" />
+            <circle class="g-o" cx="98" cy="28" r="18" />
+          </svg>
+          <span class="mode-name">You &amp; a Friend</span>
+          <span class="mode-desc">Pass the phone, take turns, same device</span>
+          <span class="mode-tag">2 players</span>
+        </button>
+
+        <button class="mode-card card-computer" id="btn-vs-computer" data-testid="btn-vs-computer">
+          <svg class="mode-glyph" viewBox="0 0 130 56" aria-hidden="true">
+            <circle class="g-o" cx="30" cy="28" r="18" />
+            <g class="g-cpu">
+              <rect x="72" y="10" width="42" height="36" rx="6" />
+              <line x1="83" y1="22" x2="103" y2="22" />
+              <line x1="83" y1="30" x2="103" y2="30" />
+              <line x1="83" y1="38" x2="95" y2="38" />
+            </g>
+          </svg>
+          <span class="mode-name">You vs Computer</span>
+          <span class="mode-desc">Pick a difficulty and take on the AI</span>
+          <span class="mode-tag">1 player</span>
+        </button>
+      </div>
+
+      <div id="difficulty-picker" class="difficulty-picker hidden" data-testid="difficulty-picker">
+        <p class="difficulty-label">Choose difficulty</p>
+        <div class="difficulty-options">
+          <button class="chip" data-difficulty="easy" data-testid="difficulty-easy">Easy</button>
+          <button class="chip" data-difficulty="medium" data-testid="difficulty-medium">Medium</button>
+          <button class="chip" data-difficulty="hard" data-testid="difficulty-hard">Unbeatable</button>
+        </div>
       </div>
     </div>
   </section>
