@@ -185,4 +185,4 @@ pytest tests/e2e_selenium/ -v
 ## Author
 
 **Adithya P Navada**  
-[GitHub](https://github.com/AdithyaNavada) · [LinkedIn](www.linkedin.com/in/adithya-p-navada)
+[GitHub](https://github.com/AdithyaNavada) · [LinkedIn](https://www.linkedin.com/in/adithya-p-navada/)
